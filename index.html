@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Endless Firewatch</title>
+</head>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+    }
+</style>
+
+<body>
+
+<canvas></canvas>
+
+<script>
+    const canvas = document.querySelector('canvas');
+
+    canvas.width = 600;
+    canvas.height = 600;
+
+    const ctx = canvas.getContext('2d');
+
+    ctx.fillStyle = '#F0FAE2';
+    ctx.fillRect(0, 0, 600, 600);
+
+    ctx.drawImage(createMountline('#F06A71'), 0, 200, 600, 600);
+    ctx.drawImage(createMountline('#93507B'), 0, 250, 800, 800);
+    ctx.drawImage(createMountline('#382C5E'), 0, 350, 1000, 1000);
+
+    function createTree(color) {
+        const treeCanvas = document.createElement('canvas');
+        treeCanvas.width = 100;
+        treeCanvas.height = 100;
+
+        const ctx = treeCanvas.getContext('2d');
+        ctx.fillStyle = color;
+
+        const branch1 = 15;
+        const branch2 = 20;
+        const branch3 = 25;
+        const branchHeight = 25;
+        const startX = 50;
+        const trunk = 5;
+
+        ctx.beginPath();
+        ctx.moveTo(startX, 0);
+        ctx.lineTo(startX - branch1, branchHeight);
+        ctx.lineTo(startX - trunk * 1.25, branchHeight);
+
+        ctx.lineTo(startX - branch2, branchHeight * 2);
+        ctx.lineTo(startX - trunk * 2, branchHeight * 2);
+
+        ctx.lineTo(startX - branch3, branchHeight * 3);
+        ctx.lineTo(startX - trunk, branchHeight * 3);
+
+        ctx.lineTo(startX - trunk, branchHeight * 3.5);
+        ctx.lineTo(startX + trunk, branchHeight * 3.5);
+
+        ctx.lineTo(startX + trunk, branchHeight * 3);
+        ctx.lineTo(startX + branch3, branchHeight * 3);
+
+        ctx.lineTo(startX + trunk * 2, branchHeight * 2);
+        ctx.lineTo(startX + branch2, branchHeight * 2);
+
+        ctx.lineTo(startX + trunk * 1.25, branchHeight);
+        ctx.lineTo(startX + branch1, branchHeight);
+
+        ctx.lineTo(startX, 0);
+
+
+        ctx.fill();
+
+        return treeCanvas;
+    }
+
+    function createMountline(color) {
+        const mountCanvas = document.createElement('canvas');
+        mountCanvas.width = 1000;
+        mountCanvas.height = 1000;
+
+        const ctx = mountCanvas.getContext('2d');
+        ctx.fillStyle = color;
+
+        ctx.moveTo(0, 100);
+        const pointsNum = 50;
+        const hScale = 1.5;
+        const halfPi = Math.PI * 0.5;
+        const seed = Math.random() - 0.5;
+        const offset = seed * halfPi * 3;
+        const mod = 1 - seed * 0.5;
+        const treeMod = Math.max(23, Math.floor((seed + 0.5) * 67));
+
+        for (let i = 0; i <= pointsNum * 20; i++) {
+            const surface1 = Math.sin(offset + 15.0 * halfPi * ((i - 3) / pointsNum)) * 0.025;
+            const surface2 = Math.sin(offset + 7.0 * halfPi * ((i - 2) / pointsNum)) * 0.1;
+            const surface3 = Math.sin(offset + 20.0 * halfPi * ((i - 13) / pointsNum)) * 0.03;
+
+            const baseline1 = Math.sin(offset * 1.1 + 1.5 * halfPi * ((i - 7) / pointsNum)) * 0.5;
+            const baseline2 = Math.sin(offset * 1.2 + 0.3 * halfPi * ((i) / pointsNum)) * 0.8;
+            const baseline3 = Math.sin(offset * 1.3 + 0.3 * halfPi * ((i) / pointsNum)) * 0.8;
+
+            const x = i * hScale;
+            const y = 100 + (surface1 + surface2 + surface3 + baseline1 + baseline2 + baseline3) * 30 * mod;
+
+            ctx.lineTo(x, y);
+
+            if (i % treeMod === 0) {
+                ctx.drawImage(createTree(color), x, y-10, 30, 30);
+            }
+
+            console.log(Math.sin(halfPi * (i / pointsNum * 20)))
+        }
+
+        ctx.lineTo(pointsNum * hScale * 15, 1000);
+        ctx.lineTo(0, 1000);
+
+        ctx.fill();
+
+        return mountCanvas;
+    }
+
+
+</script>
+</body>
+</html>
